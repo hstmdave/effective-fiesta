@@ -1,0 +1,123 @@
+public with sharing class OrgServiceCallout {
+
+    public class EventWrapper{
+        public String detail_type;
+        public String source;
+        public String account;
+        public String time_x;
+        public String region;
+        public DetailWrapper detail;
+    }
+
+        public class DetailWrapper{
+            public String hstmCorrelationId;
+            public String version;
+            public String id;
+            public String subject;
+            public String datacontenttype;
+            public DataWrapper data;
+        }
+
+
+            public class DataWrapper{
+                public String SalesforceAccountID;
+                public String BillingCity;
+                public String BillingCountry;
+                public String BillingPostalCode;
+                public String BillingState;
+                public String BillingStreet;
+                public String Active;
+                public String IsDeleted;
+                public String Name;
+                public String UltimParentAcctID;
+            }
+
+
+    public static void sendOrgServiceCallout(){
+
+
+
+    }
+}
+
+/*
+
+{   
+    "detail-type": "salesforce",
+    "source": "salesforce",    
+    "account": "325090237772",        
+    "time": "2023-01-26T17:31:00Z",   
+    "region": "us-east-1",                     
+    "detail": {                
+        "hstmCorrelationId": "0881d1a9-159c-b04e-f214-a037c0cb81fe",
+        "version": "1.0",
+        "id": "0991d1a9-159c-b04e-f214-a037c0cb92fe",        
+        "subject": "salesforce",
+        "datacontenttype": "application/json",
+        "data": {
+            "SalesforceAccountID": "0013000000FCpGdAAL",
+            "BillingCity": "Franklin",
+            "BillingCountry": "USA",
+            "BillingPostalCode": "37067",
+            "BillingState": "TN",
+            "BillingStreet": "123 main street",
+            "Active": "true",
+            "IsDeleted": "false",
+            "Name": "yousef",
+            "UltimParentAcctID": "0013000000FCpGdAAL"
+        }
+    }
+}
+
+*/
+
+/*
+public with sharing class OrgServiceCallout {
+
+    @InvocableMethod(label='Send Org Service Callout' description='Sends account data to external service' callout=true)
+    public static void sendOrgServiceCallout(List<Account> accounts) {
+        // Since callouts can't be made inside a loop easily, 
+        // we typically process them or hand them to an @future/Queueable method.
+        for (Account acc : accounts) {
+            processCallout(acc);
+        }
+    }
+
+    // Helper to build the JSON and fire the POST
+    private static void processCallout(Account acc) {
+        EventWrapper wrapper = new EventWrapper();
+        wrapper.detail_type = 'salesforce';
+        wrapper.source = 'salesforce';
+        wrapper.account = '325090237772'; // or dynamic
+        wrapper.time_x = String.valueOf(Datetime.now());
+        wrapper.region = 'us-east-1';
+
+        wrapper.detail = new DetailWrapper();
+        wrapper.detail.data = new DataWrapper();
+        
+        // Mapping Flow/Record data to JSON fields
+        wrapper.detail.data.SalesforceAccountID = acc.Id;
+        wrapper.detail.data.BillingCity = acc.BillingCity;
+        wrapper.detail.data.Name = acc.Name;
+        // ... map other fields ...
+
+        // Serialize and fix the hyphens
+        String body = JSON.serialize(wrapper)
+            .replace('"detail_type":', '"detail-type":')
+            .replace('"time_x":', '"time":');
+
+        // HTTP logic here...
+    }
+
+    // --- Your existing wrappers go here ---
+    public class EventWrapper {
+        public String detail_type;
+        public String source;
+        public String account;
+        public String time_x;
+        public String region;
+        public DetailWrapper detail;
+    }
+    // ... DetailWrapper and DataWrapper classes ...
+}
+*/
