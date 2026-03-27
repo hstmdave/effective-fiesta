@@ -1,0 +1,84 @@
+public with sharing class OrgServiceCalloutHelper {
+    
+    
+    public class EventWrapper{
+        public String detail_type;      // need to update in json string to detail-type
+        public String source;           
+        public String account;
+        public String time_x;           // need to update in json string to time
+        public String region;
+        public DetailWrapper detail;
+    }
+
+        public class DetailWrapper{
+            public String hstmCorrelationId;
+            public String version;
+            public String id_x;                 // need to update in json string to id
+            public String subject;
+            public String datacontenttype;
+            public DataWrapper data;
+        }
+
+
+            public class DataWrapper{
+                public String SalesforceAccountID;
+                public String BillingCity;
+                public String BillingCountry;
+                public String BillingPostalCode;
+                public String BillingState;
+                public String BillingStreet;
+                public String Active;
+                public String IsDeleted;
+                public String Name;
+                public String UltimParentAcctID;
+            }
+
+
+    public static String orgServiceJson(List<CustomObject__c> listACR){
+
+        // Build the JSON Body here
+        List<EventWrapper> events = new List<EventWrapper>();
+
+        for(CustomObject__c acr : listACR) {
+            // Build 3rd level JSON first
+            DataWrapper data = new DataWrapper();
+            data.SalesforceAccountID = '';
+            data.BillingCity = '';
+            data.BillingCountry = '';
+            data.BillingPostalCode = '';
+            data.BillingState = '';
+            data.BillingStreet = '';
+            data.Active = '';
+            data.IsDeleted = '';
+            data.Name = '';
+            data.UltimParentAcctID = '';
+
+            // Build 2nd level JSON and assign data to detail.data
+            DetailWrapper detail = new DetailWrapper();
+            detail.hstmCorrelationId = '';
+            detail.version = '';
+            detail.id_x = '';
+            detail.subject = '';
+            detail.datacontenttype = '';
+            detail.data = data;
+
+            // Build outer layer as detail to event.detail
+            EventWrapper event = new EventWrapper();
+            event.detail_type = '';
+            event.source = '';
+            event.account = '';
+            event.time_x = '';
+            event.region = 'us-east-1';
+            event.detail = detail;
+
+            events.add(event);
+
+        }
+
+        return JSON.serialize(events)
+            .replace('"detail_type":','"detail-type":')
+            .replace('"time_x":', '"time":')
+            .replace('"id_x":', '"id":');
+
+    }
+}
