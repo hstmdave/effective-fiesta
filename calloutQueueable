@@ -1,7 +1,7 @@
 public with sharing class OrgServiceCalloutQueueable implements Queueable, Database.AllowsCallouts {
-    private List<CustomObject__c> listACR;
+    private List<Account_Change_Request__c> listACR;
 
-    public OrgServiceCalloutQueueable(List<CustomObject__c> listACR) {
+    public OrgServiceCalloutQueueable(List<Account_Change_Request__c> listACR) {
         this.listACR = listACR;
     }
 
@@ -10,7 +10,7 @@ public with sharing class OrgServiceCalloutQueueable implements Queueable, Datab
 
         //Initialize HTTP Request and generate a JSON body
         HttpRequest request = new HttpRequest();
-        request.setEndpoint('');
+        request.setEndpoint('callout:WorkflowService' + '/submit');
         request.setMethod('POST');
         request.setHeader('Content-Type', 'application/json');
         request.setBody(OrgServiceCalloutHelper.orgServiceJson(listACR));
