@@ -1,0 +1,29 @@
+public with sharing class OrgServiceCalloutQueueable implements Queueable, Database.AllowsCallouts {
+    private List<CustomObject__c> listACR;
+
+    public OrgServiceCalloutQueueable(List<CustomObject__c> listACR) {
+        this.listACR = listACR;
+    }
+
+
+    public void execute(QueueableContext context) {
+
+        //Initialize HTTP Request and generate a JSON body
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('');
+        request.setMethod('POST');
+        request.setHeader('Content-Type', 'application/json');
+        request.setBody(OrgServiceCalloutHelper.orgServiceJson(listACR));
+
+        //Initialize HTTP Response and send the Request
+        Http http = new Http();
+        HttpResponse response = http.send(request);
+
+        if(response.getStatuscode() < 200 || response.getStatusCode() >= 300) {
+            System.debug('Callout failed. Status Code: ' + response.getStatusCode());
+        } else {
+            System.debug('Response: ' + response.getBody());
+        }
+    }
+
+}
