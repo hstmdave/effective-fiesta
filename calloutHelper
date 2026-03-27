@@ -4,16 +4,10 @@ public with sharing class OrgServiceCalloutHelper {
     public class EventWrapper{
         public String detail_type;      // need to update in json string to detail-type
         public String source;           
-        public String account;
-        public String time_x;           // need to update in json string to time
-        public String region;
         public DetailWrapper detail;
     }
 
         public class DetailWrapper{
-            public String hstmCorrelationId;
-            public String version;
-            public String id_x;                 // need to update in json string to id
             public String subject;
             public String datacontenttype;
             public DataWrapper data;
@@ -31,33 +25,32 @@ public with sharing class OrgServiceCalloutHelper {
                 public String IsDeleted;
                 public String Name;
                 public String UltimParentAcctID;
+                public String ParentAcctID;
             }
 
 
-    public static String orgServiceJson(List<CustomObject__c> listACR){
+    public static String orgServiceJson(List<Account_Change_Request__c> listACR){
 
         // Build the JSON Body here
         List<EventWrapper> events = new List<EventWrapper>();
 
-        for(CustomObject__c acr : listACR) {
+        for(Account_Change_Request__c acr : listACR) {
             // Build 3rd level JSON first
             DataWrapper data = new DataWrapper();
-            data.SalesforceAccountID = '';
-            data.BillingCity = '';
-            data.BillingCountry = '';
-            data.BillingPostalCode = '';
-            data.BillingState = '';
-            data.BillingStreet = '';
-            data.Active = '';
-            data.IsDeleted = '';
-            data.Name = '';
-            data.UltimParentAcctID = '';
+            data.SalesforceAccountID = acr.Account_ID__c;
+            data.BillingCity = acr.Billing_City__c;
+            data.BillingCountry = acr.Billing_Country__c;
+            data.BillingPostalCode = acr.Billing_Zip__c;
+            data.BillingState = acr.Billing_State__c;
+            data.BillingStreet = acr.Billing_Address__c;
+            data.Active = ''; // need clarification
+            data.IsDeleted = 'false';
+            data.Name = acr.Account__r.Name;
+            data.UltimParentAcctID = acr.Ultimate_Parent_ID__c;
+            data.ParentAcctID = acr.Parent_ID__c;
 
             // Build 2nd level JSON and assign data to detail.data
             DetailWrapper detail = new DetailWrapper();
-            detail.hstmCorrelationId = '';
-            detail.version = '';
-            detail.id_x = '';
             detail.subject = '';
             detail.datacontenttype = '';
             detail.data = data;
@@ -66,9 +59,6 @@ public with sharing class OrgServiceCalloutHelper {
             EventWrapper event = new EventWrapper();
             event.detail_type = '';
             event.source = '';
-            event.account = '';
-            event.time_x = '';
-            event.region = 'us-east-1';
             event.detail = detail;
 
             events.add(event);
@@ -76,9 +66,7 @@ public with sharing class OrgServiceCalloutHelper {
         }
 
         return JSON.serialize(events)
-            .replace('"detail_type":','"detail-type":')
-            .replace('"time_x":', '"time":')
-            .replace('"id_x":', '"id":');
+            .replace('"detail_type":','"detail-type":');
 
     }
 }
