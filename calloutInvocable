@@ -2,11 +2,11 @@ public with sharing class OrgServiceCalloutInvocable {
 
     @InvocableMethod(
         label = 'Send Org Service Callout From Flow'
-        description = 'Sends CustomObject__c record data to external Org Service'
+        description = 'Sends Account_Change_Request__c record data to external Org Service'
         callout = true
     )
 
-    public static void sendOrgServiceCallout(List<CustomObject__c> listACR) {
+    public static void sendOrgServiceCallout(List<Account_Change_Request__c> listACR) {
         if(listACR == null || listACR.isEmpty()) {
             return;
         } else {
